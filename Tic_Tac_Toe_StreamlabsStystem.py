@@ -1,3 +1,11 @@
+import clr
+
+clr.AddReference('IronPython.Modules.dll')
+import codecs
+import json
+import time
+import os
+
 # ---------------------------------------
 #   [Required]  Script Information
 # ---------------------------------------
@@ -11,10 +19,13 @@ Version = "0.0.1"
 # Other global settings
 # ---------------------------------------
 m_settings_file = "tictactoeSettings.json"
+m_playfield_file = os.path.join(os.path.dirname(__file__), "playfield.txt")
 ScriptSettings = None
 m_moderator_permission = "moderator"
 m_game = None
 m_current_challenges = {}
+m_player_1 = None
+m_player_2 = None
 
 
 # ---------------------------------------
@@ -51,7 +62,7 @@ class Settings(object):
 
 
 # ---------------------------------------
-# Game Logic
+# obligated functions
 # ---------------------------------------
 def Init():
     global ScriptSettings
@@ -81,7 +92,7 @@ def ReloadSettings(json_data):
 
 
 def Tick():
-    pass
+    remove_old_challenges()
 
 
 # ---------------------------------------
@@ -89,15 +100,48 @@ def Tick():
 # ---------------------------------------
 def start_game_command(user, user2):
     if m_game is None:
-        if user in m_current_challenges.keys():
-            Parent.SendStreamMessage("you are already challenging somebody")
-        elif m_current_challenges.get(user2, None) == user:
-            Parent.SendStreamMessage("challenge accepted")
-            start_game()  # TODO: make player specific
-            display_game(m_game)
+        username1 = Parent.GetDisplayName(user)
+        username2 = Parent.GetDisplayName(user2)
+        if username1 in m_current_challenges.keys():
+            Parent.SendStreamMessage("/me %s is already challenging somebody" % username1)
+        elif m_current_challenges.get(username2, [None])[0] == username1:
+            user1_points = Parent.GetPoints(user)
+            user2_points = Parent.GetPoints(user)
+            if user1_points > ScriptSettings.start_cost:
+                if user2_points > ScriptSettings.start_cost:
+                    Parent.RemovePoints(user, username1, ScriptSettings.start_cost)
+                    Parent.RemovePoints(user2, username2, ScriptSettings.start_cost)
+                    Parent.SendStreamMessage(
+                        "/me challenge accepted, %s and %s have started their game" % (username1, username2))
+                    start_game(user2, user)
+                    save_game()
+                    display_game()
+                else:
+                    Parent.SendStreamMessage("/me %s doesn't have enough %s, you need %s" % (
+                        username2, ScriptSettings.currency_name, ScriptSettings.start_cost))
+            else:
+                Parent.SendStreamMessage("/me %s doesn't have enough %s, you need %s" % (
+                    username1, ScriptSettings.currency_name, ScriptSettings.start_cost))
         else:
-            m_current_challenges[user] = user2
-            Parent.SendStreamMessage('{0} has challenged {1},to accept challenge type: !tictactoe {0} ')
+            m_current_challenges[username1] = [username2, time.time()]
+            Parent.SendStreamMessage(
+                '/me {0} has challenged {1},to accept challenge type: !tictactoe {0}'.format(username1, username2))
+
+
+def remove_old_challenges():
+    global m_current_challenges
+    # no iteritems() so we can delete items without error
+    if m_game is not None and len(m_current_challenges) > 0:
+        m_current_challenges = {}
+    for challenge, [_, time_stamp] in m_current_challenges.items():
+        if time.time() - time_stamp > ScriptSettings.challange_time:
+            Parent.SendStreamMessage("%s, your challenge has expired" % challenge)
+            del m_current_challenges[challenge]
+
+
+def save_game():
+    with open(m_playfield_file, mode="w") as f:
+        f.writelines("todo")
 
 
 # ---------------------------------------
@@ -152,9 +196,11 @@ def check_winner(game):
     return winner
 
 
-def start_game():
-    global m_game
+def start_game(user1, user2):
+    global m_game, m_player_1, m_player_2
     m_game = [[0, 0, 0] for x in range(3)]
+    m_player_1 = user1
+    m_player_2 = user2
 
 
 def display_game():

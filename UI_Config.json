@@ -1,3 +1,31 @@
 {
-  "output_file":"tictactoeSettings.json"
+  "output_file":"tictactoeSettings.json",
+  "play_command":{
+    "type":"textbox",
+    "value":"!play",
+    "label":"play command",
+    "tooltip":"command to play a turn",
+    "group":"commands & responses"
+  },
+  "start_command":{
+    "type":"textbox",
+    "value":"!tictactoe",
+    "label":"start command",
+    "tooltip":"command to challenge/accept a game",
+    "group":"commands & responses"
+  },
+  "start_cost":{
+    "type":"numberbox",
+    "value":1,
+    "label":"start cost",
+    "tooltip":"cost for starting a game, only charged when accepted",
+    "group":"costs & rewards"
+  },
+  "win_reward":{
+    "type":"numberbox",
+    "value":2,
+    "label":"win reward",
+    "tooltip":"reward for winning a game",
+    "group":"costs & rewards"
+  }
 }
