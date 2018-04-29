@@ -46,6 +46,7 @@ class Settings(object):
             self.win_reward = 2
             self.challenge_time = 30
             self.currency_name = "points"
+            self.spam_chat = False
 
     def reload(self, jsondata):
         """ Reload settings from Chatbot user interface by given json data. """
@@ -180,8 +181,9 @@ def remove_old_challenges():
 
 
 def print_and_save_game():
-    if m_game is not  None:
-        lines = display_game()
+    if m_game is not None:
+        if ScriptSettings.spam_chat:
+            lines = display_game()
         with open(m_playfield_file, mode="w") as f:
             f.writelines(lines)
     else:

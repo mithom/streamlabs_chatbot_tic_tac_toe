@@ -41,5 +41,12 @@
     "label":"challenge time",
     "tooltip":"time to accept a challenge",
     "group":"config"
+  },
+  "spam_chat":{
+    "type":"checkbox",
+    "value": false,
+    "label":"print playfield in chat (not recommended)",
+    "tooltip":"best only used for testing, really spammy",
+    "group":"config"
   }
 }
