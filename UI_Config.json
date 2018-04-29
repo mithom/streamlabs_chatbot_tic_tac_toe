@@ -27,5 +27,12 @@
     "label":"win reward",
     "tooltip":"reward for winning a game",
     "group":"costs & rewards"
+  },
+  "challenge_time":{
+    "type":"numberbox",
+    "value":30,
+    "label":"challenge time",
+    "tooltip":"time to accept a challenge",
+    "group":"config"
   }
 }
