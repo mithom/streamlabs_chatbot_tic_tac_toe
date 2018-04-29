@@ -171,8 +171,7 @@ def remove_old_challenges():
 
 def print_and_save_game():
     if m_game is not None:
-        if ScriptSettings.spam_chat:
-            lines = display_game()
+        lines = display_game()
         with open(m_playfield_file, mode="w") as f:
             f.writelines(lines)
     else:
@@ -258,7 +257,8 @@ def display_game():
         for col_num in range(3):
             new_row.append(d[m_game[row_num][col_num]])
         to_send = "|" + "|".join(new_row) + "|"
-        Parent.SendStreamMessage(to_send)
+        if ScriptSettings.spam_chat:
+            Parent.SendStreamMessage(to_send)
         lines.append(to_send + "\n")
     return lines
 
