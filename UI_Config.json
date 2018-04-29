@@ -14,6 +14,13 @@
     "tooltip":"command to challenge/accept a game",
     "group":"commands & responses"
   },
+  "currency_name":{
+    "type":"textbox",
+    "value":"points",
+    "label":"currency name",
+    "tooltip":"name of the used currency",
+    "group":"commands & responses"
+  },
   "start_cost":{
     "type":"numberbox",
     "value":1,
