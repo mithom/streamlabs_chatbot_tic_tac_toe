@@ -7,7 +7,6 @@ import json
 import time
 import cStringIO
 
-
 # ---------------------------------------
 #   [Required]  Script Information
 # ---------------------------------------
@@ -126,7 +125,7 @@ def play_turn(user, row, col):
         elif username in players:
             Parent.SendStreamMessage(
                 "it is not your turn %s, please wait for %s to continue" % (
-                username, Parent.GetDisplayName(players[players.index(username) - 1])))
+                    username, Parent.GetDisplayName(players[players.index(username) - 1])))
         else:
             Parent.SendStreamMessage("you are not in the current game, %s" % username)
 
@@ -176,7 +175,7 @@ def print_and_save_game():
         lines = display_game()
         with open(m_playfield_file, mode="w") as f:
             f.writelines(lines)
-        write_board()
+        # write_board()
     else:
         with open(m_playfield_file, mode="w") as f:
             f.write("")
@@ -185,10 +184,6 @@ def print_and_save_game():
 # ---------------------------------------
 # Game Logic
 # ---------------------------------------
-def draw_line(width, edge, filling):
-    Parent.SendStreamMessage(filling.join([edge] * (width + 1)))
-
-
 def display_winner(player):
     end_game()
     print_and_save_game()
@@ -241,6 +236,7 @@ def start_game(user1, user2):
     m_player_1 = user1
     m_player_2 = user2
     m_current_player = user2
+    Parent.BroadcastWsEvent("EVENT_START_TICTACTOE", "")
 
 
 def end_game():
@@ -249,11 +245,11 @@ def end_game():
     m_player_1 = None
     m_player_2 = None
     m_current_player = None
+    Parent.BroadcastWsEvent("EVENT_END_TICTACTOE", "")
 
 
 def display_game():
     d = {2: "O", 1: "X", 0: "_"}
-    draw_line(3, " ", "_")
     lines = []
     for row_num in range(3):
         new_row = []
@@ -275,6 +271,8 @@ def add_piece(player, row, column):
     """
     players = [m_player_2, m_player_1]
     m_game[row][column] = players.index(player) + 1
+    Parent.BroadcastWsEvent("EVENT_ADD_PIECE_TICTACTOE",
+                            json.dumps({"column": column, "row": row, "player": players.index(player) + 1}))
 
 
 def check_space_empty(game, row, column):
@@ -308,7 +306,7 @@ def moves_exist():
 
 def write_board():
     fp = os.path.join(os.path.dirname(__file__), "overlay.html")
-    html_code = HTML(HEAD(LINK( rel="stylesheet", type="text/css", href="style.css")) +
+    html_code = HTML(HEAD(LINK(rel="stylesheet", type="text/css", href="style.css")) +
                      SCRIPT("function reload(){location.href=location.href}; setInterval('reload()',100);") +
                      BODY(TABLE(Sum(TR(Sum(TD(get_inner_html(row, col)) for col in xrange(3))) for row in xrange(3)))))
     with open(fp, "w") as f:
@@ -323,12 +321,15 @@ def get_inner_html(row, col):
     else:
         return IMG(src="circle.png", height="100%", width="100%")
 
+
 """
 <= addChild
 Sum()
 BR() + BR()
 HEAD(..)
 """
+
+
 class TAG:
     """Generic class for tags"""
 
