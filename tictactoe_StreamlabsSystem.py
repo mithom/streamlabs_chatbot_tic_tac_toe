@@ -109,7 +109,7 @@ def play_turn(user, row, col):
     username = Parent.GetDisplayName(user)
     players = [m_player_2, m_player_1]
     if m_game is not None:
-        if username == m_current_player:
+        if user == m_current_player:
             if row.isdigit() and col.isdigit():
                 row = convert_input_to_coordinate(int(row))
                 col = convert_input_to_coordinate(int(col))
