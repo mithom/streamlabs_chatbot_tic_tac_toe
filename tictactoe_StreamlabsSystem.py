@@ -308,12 +308,8 @@ def moves_exist():
 
 def write_board():
     fp = os.path.join(os.path.dirname(__file__), "overlay.html")
-    html_code = HTML(HEAD(LINK( rel="stylesheet", type="text/css", href="style.css")) +"""<script>
-function reload(){
-location.href=location.href
-}
-setInterval('reload()',100)
-</script>""" +
+    html_code = HTML(HEAD(LINK( rel="stylesheet", type="text/css", href="style.css")) +
+                     SCRIPT("function reload(){location.href=location.href}; setInterval('reload()',100);") +
                      BODY(TABLE(Sum(TR(Sum(TD(get_inner_html(row, col)) for col in xrange(3))) for row in xrange(3)))))
     with open(fp, "w") as f:
         f.write(str(html_code))
