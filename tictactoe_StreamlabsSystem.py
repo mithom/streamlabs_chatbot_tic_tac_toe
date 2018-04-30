@@ -114,7 +114,7 @@ def play_turn(user, row, col):
                 row = convert_input_to_coordinate(int(row))
                 col = convert_input_to_coordinate(int(col))
                 if check_space_empty(m_game, row, col):
-                    add_piece(username, row, col)
+                    add_piece(user, row, col)
                     print_and_save_game()
                     switch_player()
                     winner = check_winner()
@@ -122,10 +122,10 @@ def play_turn(user, row, col):
                         display_winner(winner)
                 else:
                     Parent.SendStreamMessage("that position was not free %s" % username)
-        elif username in players:
+        elif user in players:
             Parent.SendStreamMessage(
                 "it is not your turn %s, please wait for %s to continue" % (
-                    username, Parent.GetDisplayName(players[players.index(username) - 1])))
+                    username, Parent.GetDisplayName(players[players.index(user) - 1])))
         else:
             Parent.SendStreamMessage("you are not in the current game, %s" % username)
 
