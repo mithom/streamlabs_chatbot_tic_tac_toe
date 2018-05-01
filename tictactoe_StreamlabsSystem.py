@@ -48,6 +48,9 @@ class Settings(object):
             self.challenge_time = 30
             self.currency_name = "points"
             self.spam_chat = False
+            self.border_thickness = 3
+            self.border_color = "rgba(0,0,0,255)"
+            self.field_color = "rgba(255,255,255,255)"
 
     def reload(self, jsondata):
         """ Reload settings from Chatbot user interface by given json data. """

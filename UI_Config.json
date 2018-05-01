@@ -48,5 +48,26 @@
     "label":"print playfield in chat (not recommended)",
     "tooltip":"best only used for testing, really spammy",
     "group":"config"
+  },
+  "border_thickness":{
+    "type":"numberbox",
+    "value":3,
+    "label":"border thickness (px)",
+    "tooltip":"thickness of the lines dividing the playfield",
+    "group":"view"
+  },
+  "field_color":{
+    "type":"colorpicker",
+    "value":"rgba(255,255,255,255)",
+    "label":"field color",
+    "tooltip":"background color of the playing field",
+    "group":"view"
+  },
+  "border_color":{
+    "type":"colorpicker",
+    "value":"rgba(0,0,0,255)",
+    "label":"border color",
+    "tooltip":"border color of the playing field",
+    "group":"view"
   }
 }
