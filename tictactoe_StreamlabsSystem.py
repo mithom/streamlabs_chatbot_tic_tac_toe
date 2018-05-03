@@ -99,6 +99,7 @@ def Unload():
 
 def ReloadSettings(json_data):
     ScriptSettings.reload(json_data)
+    Parent.BroadcastWsEvent("EVENT_RELOAD_SETTINGS_TICTACTOE", json_data)
 
 
 def Tick():
