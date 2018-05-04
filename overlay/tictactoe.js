@@ -2,7 +2,10 @@
 // Variables
 //--------------------------
 var serviceUrl = "ws://127.0.0.1:3337/streamlabs";
-var socket = new WebSocket(serviceUrl);
+var socket = new ReconnectingWebSocket(serviceUrl);
+socket.maxReconnectInterval = 5000;
+socket.reconnectDecay = 1.1;
+socket.timeoutInterval = 1000;
 var table_body_string = "<tbody>" +
     "<tr><td id='0 0'></td><td id='0 1'></td><td id='0 2'></td></tr>" +
     "<tr><td id='1 0'></td><td id='1 1'></td><td id='1 2'></td></tr>" +
