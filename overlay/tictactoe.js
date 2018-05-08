@@ -65,6 +65,7 @@ socket.onmessage = function (message) {
     var data = JSON.parse(message.data);
     switch (data["event"]) {
         case "EVENT_START_TICTACTOE":
+            clearField();
             createField();
             break;
         case "EVENT_END_TICTACTOE":
@@ -95,10 +96,13 @@ function updateCss() {
 
 function clearField() {
     var playfield = document.getElementById("playfield");
-    playfield.removeChild(playfield.firstChild);
+    if(playfield.firstChild != null){
+        playfield.removeChild(playfield.firstChild);
+    }
 }
 
 createField = function () {
+    clearField();
     var playfield = document.getElementById("playfield");
     playfield.appendChild(getFieldHtml());
 };

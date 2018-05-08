@@ -41,16 +41,31 @@ class Settings(object):
             with codecs.open(settingsfile, encoding="utf-8-sig", mode="r") as f:
                 self.__dict__ = json.load(f, encoding="utf-8")
         except:
+            # commands & responses
             self.play_command = "!play"
             self.start_command = "!tictactoe"
+            self.challenge_response = "{0} has challenged {1},to accept challenge type: !tictactoe {0}"
+            self.challenge_accepted_response = "challenge accepted, {0} and {1} have started their game"
+            self.not_enough_points_response = "{0} doesn't have enough {1}, you need {2}"
+            self.challenge_expired_response = "{0}, your challenge has expired"
+            self.not_your_turn_response = "it is not your turn {0}, please wait for {1} to continue"
+            self.position_not_free_response = "that position was not free {0}"
+            self.already_challenging_response = "{0} is already challenging somebody"
+            self.not_in_game_response = "you are not in the current game, {0}"
+
+            # costs & rewards
             self.start_cost = 1
             self.win_reward = 2
+
+            # config
             self.challenge_time = 30
-            self.currency_name = "points"
             self.spam_chat = False
+            self.not_show_me = False
+
+            # view
             self.border_thickness = 3
-            self.border_color = "rgba(0,0,0,255)"
-            self.field_color = "rgba(255,255,255,255)"
+            self.border_color = "rgba(0,0,0,1)"
+            self.field_color = "rgba(255,255,255,1)"
 
     def reload(self, jsondata):
         """ Reload settings from Chatbot user interface by given json data. """
@@ -109,6 +124,12 @@ def Tick():
 # ---------------------------------------
 # Chatbot adaption
 # ---------------------------------------
+def format_message(to_send):
+    if not ScriptSettings.not_show_me:
+        to_send = '/me ' + to_send
+    return to_send
+
+
 def play_turn(user, row, col):
     username = Parent.GetDisplayName(user)
     players = [m_player_2, m_player_1]
@@ -125,20 +146,22 @@ def play_turn(user, row, col):
                     if winner is not None or not moves_exist():
                         display_winner(winner)
                 else:
-                    Parent.SendStreamMessage("that position was not free %s" % username)
+                    to_send = ScriptSettings.position_not_free_response.format(username)
+                    Parent.SendStreamMessage(format_message(to_send))
         elif user in players:
-            Parent.SendStreamMessage(
-                "it is not your turn %s, please wait for %s to continue" % (
-                    username, Parent.GetDisplayName(players[players.index(user) - 1])))
+            to_send = ScriptSettings.not_your_turn_response.format(username, Parent.GetDisplayName(players[players.index(user) - 1]))
+            Parent.SendStreamMessage(format_message(to_send))
         else:
-            Parent.SendStreamMessage("you are not in the current game, %s" % username)
+            to_send = ScriptSettings.not_in_game_response.format(username)
+            Parent.SendStreamMessage(format_message(to_send))
 
 
 def start_game_command(user, username2):
     if m_game is None:
         username1 = Parent.GetDisplayName(user)
         if username1 in m_current_challenges.keys():
-            Parent.SendStreamMessage("/me %s is already challenging somebody" % username1)
+            to_send = ScriptSettings.already_challenging_response.format(username1)
+            Parent.SendStreamMessage(format_message(to_send))
         elif m_current_challenges.get(username2, [None])[0] == username1:
             user1_points = Parent.GetPoints(user)
             user2 = m_current_challenges[username2][2]
@@ -147,20 +170,20 @@ def start_game_command(user, username2):
                 if user2_points > ScriptSettings.start_cost:
                     Parent.RemovePoints(user, username1, ScriptSettings.start_cost)
                     Parent.RemovePoints(user2, username2, ScriptSettings.start_cost)
-                    Parent.SendStreamMessage(
-                        "/me challenge accepted, %s and %s have started their game" % (username1, username2))
+                    to_send = ScriptSettings.challenge_accepted_response.format(username1, username2)
+                    Parent.SendStreamMessage(format_message(to_send))
                     start_game(user2, user)
                     print_and_save_game()
                 else:
-                    Parent.SendStreamMessage("/me %s doesn't have enough %s, he needs %s" % (
-                        username2, ScriptSettings.currency_name, ScriptSettings.start_cost))
+                    to_send = ScriptSettings.not_enough_points_response.format(username2, Parent.GetCurrencyName(), ScriptSettings.start_cost)
+                    Parent.SendStreamMessage(format_message(to_send))
             else:
-                Parent.SendStreamMessage("/me %s doesn't have enough %s, you need %s" % (
-                    username1, ScriptSettings.currency_name, ScriptSettings.start_cost))
+                to_send = ScriptSettings.not_enough_points_response.format(username1, Parent.GetCurrencyName(), ScriptSettings.start_cost)
+                Parent.SendStreamMessage(to_send)
         else:
             m_current_challenges[username1] = [username2, time.time(), user]
-            Parent.SendStreamMessage(
-                '/me {0} has challenged {1},to accept challenge type: !tictactoe {0}'.format(username1, username2))
+            to_send = ScriptSettings.challenge_response.format(username1, username2)
+            Parent.SendStreamMessage(format_message(to_send))
 
 
 def remove_old_challenges():
@@ -170,7 +193,8 @@ def remove_old_challenges():
         m_current_challenges = {}
     for challenge, [_, time_stamp, _] in m_current_challenges.items():
         if time.time() - time_stamp > ScriptSettings.challenge_time:
-            Parent.SendStreamMessage("%s, your challenge has expired" % challenge)
+            to_send = ScriptSettings.challenge_expired_response.format(challenge)
+            Parent.SendStreamMessage(format_message(to_send))
             del m_current_challenges[challenge]
 
 

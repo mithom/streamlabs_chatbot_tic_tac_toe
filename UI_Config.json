@@ -14,11 +14,60 @@
     "tooltip":"command to challenge/accept a game",
     "group":"commands & responses"
   },
-  "currency_name":{
+  "challenge_response":{
     "type":"textbox",
-    "value":"points",
-    "label":"currency name",
-    "tooltip":"name of the used currency",
+    "value":"{0} has challenged {1},to accept challenge type: !tictactoe {0}",
+    "label":"challenge response",
+    "tooltip":"shown when challenging someone",
+    "group":"commands & responses"
+  },
+  "challenge_accepted_response":{
+    "type":"textbox",
+    "value":"challenge accepted, {0} and {1} have started their game",
+    "label":"challenge accepted response",
+    "tooltip":"shown when a game starts by accepting a challenge",
+    "group":"commands & responses"
+  },
+  "not_enough_points_response":{
+    "type":"textbox",
+    "value":"{0} doesn't have enough {1}, you need {2}",
+    "label":"not enough points response",
+    "tooltip":"shown when failed to challenge because user doesn't have enough points",
+    "group":"commands & responses"
+  },
+  "challenge_expired_response":{
+    "type":"textbox",
+    "value":"{0}, your challenge has expired",
+    "label":"challenge expired response",
+    "tooltip":"shown when u can start challenging somebody else",
+    "group":"commands & responses"
+  },
+  "not_your_turn_response":{
+    "type":"textbox",
+    "value":"it is not your turn {0}, please wait for {1} to continue",
+    "label":"not your turn response",
+    "tooltip":"shown when playing before your turn",
+    "group":"commands & responses"
+  },
+  "position_not_free_response":{
+    "type":"textbox",
+    "value":"that position was not free {0}",
+    "label":"position not free response",
+    "tooltip":"shown when playing on a filled tile",
+    "group":"commands & responses"
+  },
+  "already_challenging_response":{
+    "type":"textbox",
+    "value":"{0} is already challenging somebody",
+    "label":"already challenging response",
+    "tooltip":"shown when trying to challenge someone while you have another unexpired challenge",
+    "group":"commands & responses"
+  },
+  "not_in_game_response":{
+    "type":"textbox",
+    "value":"you are not in the current game, {0}",
+    "label":"not in current game response",
+    "tooltip":"shown when someone tries to play that is not in the current game",
     "group":"commands & responses"
   },
   "start_cost":{
@@ -58,14 +107,14 @@
   },
   "field_color":{
     "type":"colorpicker",
-    "value":"rgba(255,255,255,255)",
+    "value":"rgba(255,255,255,1)",
     "label":"field color",
     "tooltip":"background color of the playing field",
     "group":"view"
   },
   "border_color":{
     "type":"colorpicker",
-    "value":"rgba(0,0,0,255)",
+    "value":"rgba(0,0,0,1)",
     "label":"border color",
     "tooltip":"border color of the playing field",
     "group":"view"
