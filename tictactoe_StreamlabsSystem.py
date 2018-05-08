@@ -14,7 +14,7 @@ ScriptName = "tic-tac-toe"
 Website = "https://www.twitch.tv/mi_thom"
 Description = "play tic tac toe in chat/on stream"
 Creator = "mi_thom + mathiasAC"
-Version = "0.1.0"
+Version = "1.0.0"
 
 # ---------------------------------------
 # Other global settings
