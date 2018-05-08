@@ -125,6 +125,7 @@ def ReloadSettings(json_data):
 
 def Tick():
     remove_old_challenges()
+    end_inactive_game()
 
 
 # ---------------------------------------
