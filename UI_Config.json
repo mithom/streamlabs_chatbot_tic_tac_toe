@@ -98,6 +98,13 @@
     "tooltip":"best only used for testing, really spammy",
     "group":"config"
   },
+  "not_show_me":{
+    "type":"checkbox",
+    "value": false,
+    "label":"do not add /me before messages",
+    "tooltip":"for compatibility with youtube & mixer",
+    "group":"config"
+  },
   "border_thickness":{
     "type":"numberbox",
     "value":3,
