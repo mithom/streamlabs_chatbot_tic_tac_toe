@@ -52,6 +52,8 @@ class Settings(object):
             self.position_not_free_response = "that position was not free {0}"
             self.already_challenging_response = "{0} is already challenging somebody"
             self.not_in_game_response = "you are not in the current game, {0}"
+            self.tie_response = "Tie"
+            self.winner_response = "Player {0} wins!"
 
             # costs & rewards
             self.start_cost = 1
@@ -216,9 +218,11 @@ def display_winner(player):
     end_game()
     print_and_save_game()
     if player is None:
-        Parent.SendStreamMessage("Tie")
+        to_send = ScriptSettings.tie_response
+        Parent.SendStreamMessage(format_message(to_send))
     else:
-        Parent.SendStreamMessage("Player " + Parent.GetDisplayName(player) + " wins!")
+        to_send = ScriptSettings.winner_response.format(Parent.GetDisplayName(player))
+        Parent.SendStreamMessage(format_message(to_send))
 
 
 def check_row_winner(row):
