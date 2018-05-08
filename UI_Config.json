@@ -70,6 +70,20 @@
     "tooltip":"shown when someone tries to play that is not in the current game",
     "group":"commands & responses"
   },
+  "tie_response":{
+    "type":"textbox",
+    "value":"Tie",
+    "label":"tie response",
+    "tooltip":"shown when games end in a tie",
+    "group":"commands & responses"
+  },
+  "winner_response":{
+    "type":"textbox",
+    "value":"Player {0} wins!",
+    "label":"winner response",
+    "tooltip":"shown when 1 person wins",
+    "group":"commands & responses"
+  },
   "game_timeout_response":{
     "type":"textbox",
     "value":"Player {0} has won because the other player has been inactive for too long",
