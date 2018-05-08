@@ -28,6 +28,7 @@ m_current_challenges = {}
 m_player_1 = None
 m_player_2 = None
 m_current_player = None
+m_last_play_time = 0
 
 
 # ---------------------------------------
@@ -54,6 +55,7 @@ class Settings(object):
             self.not_in_game_response = "you are not in the current game, {0}"
             self.tie_response = "Tie"
             self.winner_response = "Player {0} wins!"
+            self.game_timeout_response = "Player {0} has won because the other player has been inactive for too long"
 
             # costs & rewards
             self.start_cost = 1
@@ -63,6 +65,8 @@ class Settings(object):
             self.challenge_time = 30
             self.spam_chat = False
             self.not_show_me = False
+            self.timeout = 5
+            self.use_timeout = True
 
             # view
             self.border_thickness = 3
@@ -126,6 +130,11 @@ def Tick():
 # ---------------------------------------
 # Chatbot adaption
 # ---------------------------------------
+def end_inactive_game():
+    if ScriptSettings.use_timeout and m_game is not None and time.time() > (m_last_play_time + ScriptSettings.timeout*60):
+        display_winner([m_player_2, m_player_1][[m_player_1, m_player_2].index(m_current_player)], timeout=True)
+
+
 def format_message(to_send):
     if not ScriptSettings.not_show_me:
         to_send = '/me ' + to_send
@@ -133,10 +142,12 @@ def format_message(to_send):
 
 
 def play_turn(user, row, col):
+    global m_last_play_time
     username = Parent.GetDisplayName(user)
     players = [m_player_2, m_player_1]
     if m_game is not None:
         if user == m_current_player:
+            m_last_play_time = time.time()
             if row.isdigit() and col.isdigit():
                 row = convert_input_to_coordinate(int(row))
                 col = convert_input_to_coordinate(int(col))
@@ -214,14 +225,17 @@ def print_and_save_game():
 # ---------------------------------------
 # Game Logic
 # ---------------------------------------
-def display_winner(player):
+def display_winner(player, timeout=False):
     end_game()
     print_and_save_game()
     if player is None:
         to_send = ScriptSettings.tie_response
         Parent.SendStreamMessage(format_message(to_send))
     else:
-        to_send = ScriptSettings.winner_response.format(Parent.GetDisplayName(player))
+        if timeout:
+            to_send = ScriptSettings.game_timeout_response.format(Parent.GetDisplayName(player))
+        else:
+            to_send = ScriptSettings.winner_response.format(Parent.GetDisplayName(player))
         Parent.SendStreamMessage(format_message(to_send))
 
 
@@ -263,11 +277,12 @@ def check_winner():
 
 
 def start_game(user1, user2):
-    global m_game, m_player_1, m_player_2, m_current_player
+    global m_game, m_player_1, m_player_2, m_current_player, m_last_play_time
     m_game = [[0, 0, 0] for x in range(3)]
     m_player_1 = user1
     m_player_2 = user2
     m_current_player = user2
+    m_last_play_time = time.time()
     Parent.BroadcastWsEvent("EVENT_START_TICTACTOE", "")
 
 

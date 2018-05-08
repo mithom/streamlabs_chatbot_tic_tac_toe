@@ -70,6 +70,13 @@
     "tooltip":"shown when someone tries to play that is not in the current game",
     "group":"commands & responses"
   },
+  "game_timeout_response":{
+    "type":"textbox",
+    "value":"Player {0} has won because the other player has been inactive for too long",
+    "label":"game timeout response",
+    "tooltip":"shown when current player was inactive for too long. Game ends here",
+    "group":"commands & responses"
+  },
   "start_cost":{
     "type":"numberbox",
     "value":1,
@@ -103,6 +110,20 @@
     "value": false,
     "label":"do not add /me before messages",
     "tooltip":"for compatibility with youtube & mixer",
+    "group":"config"
+  },
+  "timeout":{
+    "type":"numberbox",
+    "value":5,
+    "label":"timeout time (min)",
+    "tooltip":"after how many minutes of inactivity does the current player lose",
+    "group":"config"
+  },
+  "use_timeout":{
+    "type":"checkbox",
+    "value": true,
+    "label":"end game after inactive period",
+    "tooltip":"the inactive player will lose and the other one will win",
     "group":"config"
   },
   "border_thickness":{
