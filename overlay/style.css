@@ -1,5 +1,7 @@
 td {
-    border: 1px solid black;
     height: 70px !important;
     width: 70px !important;
+    border-color: blue;
+    border-width: 1px;
+    border-style: solid;
 }

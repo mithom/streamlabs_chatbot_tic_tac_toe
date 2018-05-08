@@ -12,7 +12,8 @@ var table_body_string = "<tbody>" +
     "<tr><td id='2 0'></td><td id='2 1'></td><td id='2 2'></td></tr>" +
     "</tbody>";
 
-var s = document.styleSheets[1];
+var s = document.styleSheets[0];
+window.onload = updateCss;
 
 function changeStylesheetRule(stylesheet, selector, property, value) {
 	selector = selector.toLowerCase();
@@ -64,44 +65,51 @@ socket.onmessage = function (message) {
     var data = JSON.parse(message.data);
     switch (data["event"]) {
         case "EVENT_START_TICTACTOE":
-            create_field();
+            createField();
             break;
         case "EVENT_END_TICTACTOE":
             console.log("clearing bord");
-            clear_field();
-            clear_field();
-            clear_field();
+            clearField();
+            clearField();
+            clearField();
             break;
         case "EVENT_ADD_PIECE_TICTACTOE":
-            add_piece(data);
+            addPiece(data);
             break;
         case "EVENT_RELOAD_SETTINGS_TICTACTOE":
-            // TODO: reload settings
+            reloadSettings(data["data"]);
             break;
     }
 };
 
-function reload_settings(json_data) {
+function reloadSettings(json_data) {
     settings = JSON.parse(json_data);
+    updateCss()
 }
 
-function clear_field() {
+function updateCss() {
+    changeStylesheetRule(s, "td", "border-color", settings["border_color"]);
+    changeStylesheetRule(s, "td", "background-color", settings["field_color"]);
+    changeStylesheetRule(s, "td", "border-width", settings["border_thickness"]+"px");
+}
+
+function clearField() {
     var playfield = document.getElementById("playfield");
     playfield.removeChild(playfield.firstChild);
 }
 
-create_field = function () {
+createField = function () {
     var playfield = document.getElementById("playfield");
-    playfield.appendChild(get_field_html());
+    playfield.appendChild(getFieldHtml());
 };
 
-get_field_html = function () {
+getFieldHtml = function () {
     var div = document.createElement('table');
     div.innerHTML = table_body_string.trim();
     return div.firstChild;
 };
 
-add_piece = function (data) {
+addPiece = function (data) {
     data = data["data"];
     data = JSON.parse(data);
     var id = String(data["row"]) + " " + String(data["column"]);
