@@ -172,6 +172,8 @@ def play_turn(user, row, col):
 
 def start_game_command(user, username2):
     if m_game is None:
+        if username2.starswith("@"):
+            username2 = username2.replace("@", "")
         username1 = Parent.GetDisplayName(user)
         if username1 in m_current_challenges.keys():
             to_send = ScriptSettings.already_challenging_response.format(username1)
